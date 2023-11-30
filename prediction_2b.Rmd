@@ -1,0 +1,147 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+collision_data <- read.csv('Chicago_collision_data.csv')
+```
+
+```{r}
+head(collision_data)
+```
+```{r}
+collision_data_fullname <- collision_data %>% 
+  unite(full_name, c('Genus', 'Species'), sep = ' ') 
+head(collision_data_fullname)
+```
+
+```{r}
+trophic_level <- read.csv('unique_name.csv')
+trophic_level <- trophic_level %>% 
+  select(-X, -X.1) %>% 
+  rename(full_name = x)
+
+head(trophic_level)
+```
+
+
+```{r}
+# merge the collision dataframe with the trophic-level dataframe
+collision_full <- merge(collision_data_fullname, trophic_level, by = 'full_name')
+
+head(collision_full)
+```
+
+```{r}
+# we only care about omnivore or non-omnivore, so merge carnivore and herbivore into non-omnivore
+collision_full <- collision_full %>% 
+  mutate(trophic_level = ifelse(trophic_level == 'Omnivore', 'Omnivore', 'Non-Omnivore'))
+
+# wrangle the data using group_by and summarise to get the frequency of collisions per species
+frequency_collision <- collision_full %>%
+  group_by(full_name) %>% 
+  summarise(frequency_of_collision = n(), trophic_level = first(trophic_level)) 
+
+head(frequency_collision)  
+```
+
+
+```{r}
+# Overview of the data
+frequency_collision %>% 
+  ggplot(aes(x = frequency_of_collision, fill = trophic_level)) + geom_histogram()
+```
+```{r}
+# data distribution is right-skewed, so try to normalize it
+ggplot(frequency_collision, aes(x = log(frequency_of_collision), 
+                                fill = trophic_level)) + geom_histogram() + facet_wrap(~trophic_level)
+```
+
+
+```{r}
+# check equal variances
+frequency_collision %>% 
+  group_by(trophic_level) %>% 
+  summarize(v = var(frequency_of_collision))
+```
+
+
+```{r}
+# log-transformation
+frequency_collision_log_transformed <- frequency_collision %>% 
+  mutate(l_t = log(frequency_of_collision))
+head(frequency_collision_log_transformed)
+# t-test
+t.test(l_t~trophic_level, frequency_collision_log_transformed)
+```
+
+After log-transformation, still not normal. So instead using a nonparametric test: permutation test
+
+```{r}
+mean_table <- frequency_collision %>% 
+  group_by(trophic_level) %>% 
+  summarize(mean(frequency_of_collision))
+
+# omnivore - non_omnivore
+diff_means_obs <- 974.1111 - 679.4219	
+```
+
+
+Null hypothesis: No difference in the frequency of bird-building collisions in omnivore species and nonomnivore species.
+mean_df = 0
+Alternative hypothesis: Frequency is lower for omnivore species. 
+mean_df < 0 (omnivore - non_omnivore)
+
+```{r}
+# permutation test
+permute_and_calculate_mean_diff <- function(){
+  reshuffled <- frequency_collision
+  reshuffled$frequency_of_collision <- sample(reshuffled$frequency_of_collision, size = nrow(frequency_collision), replace = F)
+  
+  mean_omnivores_permuted <- mean(reshuffled %>% filter(trophic_level == "Omnivore") %>% pull(frequency_of_collision))
+  mean_nonomnivores_permuted <- mean(reshuffled %>% filter(trophic_level == "Non-Omnivore") %>% pull(frequency_of_collision))
+  
+  mean_diff_permuted <- mean_omnivores_permuted - mean_nonomnivores_permuted
+  # test statistic after permutation
+  
+  return(mean_diff_permuted)
+}
+
+permute_and_calculate_mean_diff()
+```
+```{r}
+n_sims <- 1000 # number of times to permute data to generated null distribution
+test_stats <- c()
+
+for (i in 1:n_sims){
+  test_stats[i] <- permute_and_calculate_mean_diff()
+}
+
+ggplot() + geom_histogram(aes(x = test_stats), fill = "gray") +
+  geom_vline(xintercept = diff_means_obs, color = "red")
+```
+```{r}
+length(abs(test_stats)[(diff_means_obs > test_stats)])/length(test_stats)
+```
+
+Fail to reject the null hypothesis. 
+
+
+```{r}
+# sample size
+frequency_collision %>% group_by(trophic_level) %>% summarize(count = n())
+```
+
+
+
+
+
+
+
+
+
