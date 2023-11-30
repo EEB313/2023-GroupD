@@ -1,0 +1,51 @@
+---
+title: "Bird-Building Collision Rate"
+Author: Yunhua
+output: html_notebook
+---
+
+Extract all unique scientific names within the data frame.
+
+```{r}
+library(readr)
+
+data <- read_csv("//Users/carriethefox/2023-GroupD/data/raw/Chicago_collision_data.csv")
+data$full_name <- paste(data$Genus, data$Species)
+unique_name <- unique(data$full_name)
+unique_name
+```
+Create a new `.csv` file containing these scientific names.
+
+```{r}
+write.csv(unique_name, "unique_name.csv", row.names = FALSE)
+```
+
+Extract Genus name only.
+```{r}
+library(readr)
+
+data <- read_csv("//Users/carriethefox/2023-GroupD/data/raw/Chicago_collision_data.csv")
+unique_genus <- unique(data$Genus)
+unique_genus
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
