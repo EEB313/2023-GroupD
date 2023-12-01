@@ -10,7 +10,7 @@ library(dplyr)
 ```
 
 ```{r}
-collision_data <- read.csv("/Users/carriethefox/2023-GroupD/data/raw/Chicago_collision_data.csv")
+collision_data <- read.csv("Chicago_collision_data.csv")
 
 # Combine 'Genus' and 'Species' to create a full species name
 collision_data$Full_Species <- paste(collision_data$Genus, collision_data$Species)
@@ -31,7 +31,7 @@ ggplot(top_species, aes(x=reorder(Full_Species, n), y=n)) +
 ```
 
 ```{r}
-bird_data <- read.csv("/Users/carriethefox/2023-GroupD/data/raw/Bird_Mass_Wingspan_Windload.csv")
+bird_data <- read.csv("Bird_Mass_Wingspan_Windload.csv")
 
 sorted_bird_data <- bird_data[order(-bird_data$Wind_Load), ]
 top_20_birds <- head(sorted_bird_data, 20)
@@ -53,18 +53,18 @@ collision_freq_data <- collision_data %>%
   summarize(collision_freq = n())
 
 # Write the new dataset to a CSV file
-write.csv(collision_freq_data, "/Users/carriethefox/2023-GroupD/data/processed/Chicago_collision_data_new.csv", row.names = FALSE)
+write.csv(collision_freq_data, "Chicago_collision_data_wide.csv", row.names = FALSE)
 
 ```
 
 ```{r}
 
-new_collision_data <- read.csv("/Users/carriethefox/2023-GroupD/data/processed/Chicago_collision_data_new.csv")
+new_collision_data <- read.csv("Chicago_collision_data_wide.csv")
 
 # Merging the datasets
 merged_data <- merge(bird_data, new_collision_data, by = "Species_Name")
 
-write.csv(merged_data, "/Users/carriethefox/2023-GroupD/data/processed/merged_data.csv", row.names = FALSE)
+write.csv(merged_data, "merged_data.csv", row.names = FALSE)
 # Viewing the first few rows of the merged dataset
 head(merged_data)
 ```
