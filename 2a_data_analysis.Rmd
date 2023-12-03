@@ -48,7 +48,7 @@ The relationship between variables is shown in the matrix scatter plot. `wind lo
 
 ## Linear Mixed Models
 
-Because simple linear regression model has some limitations, this study adds the date variable to create a linear mixed model, explores the impact of wind load on the collision rate on different dates, and compares the explanatory power and goodness of fit between the linear regression model and the linear mixed model.
+Because simple linear regression model has some limitations, this study adds the date variable to create a linear mixed model, explores the impact of wind load on the collision rate on different dates.
 
 #### Merge data
 ```{r}
