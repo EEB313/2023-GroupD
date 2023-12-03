@@ -21,7 +21,7 @@ head(collision_data_fullname)
 ```
 
 ```{r}
-trophic_level <- read.csv('unique_name.csv')
+trophic_level <- read.csv('trophic_level.csv')
 trophic_level <- trophic_level %>% 
   select(-X, -X.1) %>% 
   rename(full_name = x)
