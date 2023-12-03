@@ -1,0 +1,71 @@
+---
+title: "Bird_species_collision_rate"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+collision_data <- read.csv("Chicago_collision_data.csv")
+
+# Combine 'Genus' and 'Species' to create a full species name
+collision_data$Full_Species <- paste(collision_data$Genus, collision_data$Species)
+
+# Calculate the collision frequency for each species
+species_collision_counts <- collision_data %>%
+  count(Full_Species) %>%
+  arrange(desc(n))
+
+# Plotting the top 20 species with the most collisions using ggplot2
+top_species <- head(species_collision_counts, 20)
+
+ggplot(top_species, aes(x=reorder(Full_Species, n), y=n)) +
+  geom_bar(stat="identity", fill="skyblue") +
+  coord_flip() +  # Flip coordinates to make it a horizontal bar chart
+  labs(x="Bird Species", y="Collision Frequency", title="Top 20 Bird Species by Collision Frequency") +
+  theme_minimal()
+```
+
+```{r}
+bird_data <- read.csv("Bird_Mass_Wingspan_Windload.csv")
+
+sorted_bird_data <- bird_data[order(-bird_data$Wind_Load), ]
+top_20_birds <- head(sorted_bird_data, 20)
+ggplot(top_20_birds, aes(x=reorder(Species_Name, Wind_Load), y=Wind_Load)) +
+  geom_bar(stat="identity", fill="blue") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  labs(x = "Bird Species", y = "Wind Load", title = "Top 20 Bird Species with Highest Wind Load")
+```
+
+```{r}
+
+# Combine genus and species to create a complete species name
+collision_data$Species_Name <- paste(collision_data$Genus, collision_data$Species)
+
+# Calculate collision frequency for each species
+collision_freq_data <- collision_data %>%
+  group_by(Species_Name) %>%
+  summarize(collision_freq = n())
+
+# Write the new dataset to a CSV file
+write.csv(collision_freq_data, "Chicago_collision_data_wide.csv", row.names = FALSE)
+
+```
+
+```{r}
+
+new_collision_data <- read.csv("Chicago_collision_data_wide.csv")
+
+# Merging the datasets
+merged_data <- merge(bird_data, new_collision_data, by = "Species_Name")
+
+write.csv(merged_data, "merged_data.csv", row.names = FALSE)
+# Viewing the first few rows of the merged dataset
+head(merged_data)
+```
+
