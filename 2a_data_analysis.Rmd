@@ -46,70 +46,9 @@ pairs(bird[,2:6])
 ```
 The relationship between variables is shown in the matrix scatter plot. `wind load` and `lfreq` have a weak positive correlation.
 
-
-### Regression Analysis
-
-```{r}
-fit<-lm(lfreq~Wind_Load+Avg_Body_Mass_g,data = bird) ## Build model
-summary(fit)
-```
-
-```{r}
-par(mfrow=c(2,2)) # look at all 4 plots together
-plot(fit)
-```
-
-Different seasons and species of birds are confounding variables. In different seasons, birds fly at different heights due to different temperatures, and the frequency of hitting buildings may be different. Different birds fly at different heights and may hit buildings at different frequencies.
-
-In the residual graph, the average residual value is 0, and the residual value has no obvious trend pattern, which satisfies the homogeneity assumption. In the normal QQ graph, the residual value satisfies the normality hypothesis. It can be seen from the Cook distance chart that there are a few outliers in the data.
-
-
-
-##	2.Hypothesis Testing
-
-$$\begin{aligned}H_0&: \beta_1 = 0\\ H_1&:\beta_1 \neq 0  \end{aligned}$$
-
-$$
-t = \frac{\hat{\beta}_1 - {\beta}_1}{se_\hat{\beta1}}
-$$
-Choose $\alpha$=0.05. If the p value is less than 0.05, the null hypothesis will be rejected, otherwise it will not be rejected.
-We get t-value = 2.109 and p-value = 0.0378 in the regression output, because p-value < 0.05, null hypothesis is rejected. Higher wind loads in bird species are associated with higher collision rates.
-
-
-## 3.	Result Interpretation
-In this case, regression modeling is carried out, in which `lfreq` is used as the dependent variable. `wind load `and `Avg_Body_Mass_g` are the explanatory variables. Because of the strong linear correlation between `Avg_Body_Mass_g` and `Avg_Wingspan_cm`, only the covariate `Avg_Body_Mass_g` is used.
-
-It is found that the regression coefficient of `Wind_Load` is 4.5562, and the p value is `0.0378`, which shows that Wind_Load has 
-a significant positive impact on the dependent variable `lfreq`. The greater the `Wind_Load`, the greater the collision frequency. The regression coefficient of the variable average weight is -0.1352, p-value = 0.0212, which shows that `Avg_Body_Mass_g` has a significant negative impact on the dependent variable. With the increase of `Avg_Body_Mass_g`, the collision frequency decreases gradually.
-
-R-square of the model is 0.0633, which means that 6.33% of the total impact rate is determined by three explanatory variables. The adjusted R square is 0.0421, which means that the goodness of fit of the model is not good, and representative variables can be found. This data analysis supports the H1 hypothesis, higher wind loads in bird species are associated with higher collision rates.
-
-Through regression analysis, increase of wind load will promote the frequency of birds hitting buildings and threaten the biodiversity of birds. Wind load is related to many factors, such as topography and building structure, and it is suggested that very high buildings should not be built in future buildings.
-
-## 4.	Validation and Sensitivity Analysis
-
-```{r message=FALSE, warning=FALSE}
-library(DALEX)
-new_data<-bird[23,]
-lm_explain <- explain.default(fit, data = bird, y = bird$Wind_Load,
-                                label = "model_sensitivity")
-
-
-lm_predict <- predict_profile(lm_explain,
-                                      new_observation = new_data,
-                                      variables = c("Avg_Body_Mass_g","Wind_Load"))
-
-plot(lm_predict,
-     variables = c("Avg_Body_Mass_g","Wind_Load"))
-```
-
-When `Avg_Body_Mass_g` increases, the response variable will drop sharply, and when `wind load` rises, the response variable will rise sharply. These two variables have the same influence on the dependent variable.
-Through previous research on the collision frequency of birds, it is also found that the bird's own weight and wind load are important factors affecting the impact of birds on buildings.
-
-
 ## Linear Mixed Models
 
-Because the multiple linear regression model has some limitations, this study adds the date variable to create a linear mixed model, explores the impact of wind load on the collision rate on different dates, and compares the explanatory power and goodness of fit between the linear regression model and the linear mixed model.
+Because simple linear regression model has some limitations, this study adds the date variable to create a linear mixed model, explores the impact of wind load on the collision rate on different dates, and compares the explanatory power and goodness of fit between the linear regression model and the linear mixed model.
 
 #### Merge data
 ```{r}
@@ -122,14 +61,6 @@ bird1<-merge(data1,bird,by="Species_Name")
 ```{r message=FALSE, warning=FALSE}
 library(lme4)
 library(lmerTest)
-fit2<-lmer(lfreq~Wind_Load+Avg_Body_Mass_g+(Wind_Load|Date),data = bird1)
+fit2<-lmer(lfreq~Wind_Load+(1|Date),data = bird1)
 summary(fit2)
 ```
-
-#### Model select
-```{r}
-fit1<-lm(lfreq~Wind_Load+Avg_Body_Mass_g,data = bird1)## Build model with merge data
-AIC(fit1,fit2)
-```
-Comparing the goodness of fit between linear model and random effect model by AIC, it is found that the AIC of random effect model is smaller, which shows that model 2 is better to explain the influence of wind load on collision rate.
-
