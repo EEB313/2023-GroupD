@@ -15,19 +15,36 @@ The contents of the group repository are as follows.
 
 **Data (raw and processed)**:
 
-* Bird-building collision data from Winger et al. (Chicago_collision_data.csv). 
-* Collision data in wide format (Chicago_collision_data_wide.csv). 
-* Names of species in collision data (Bird_sci_name.csv). 
-* Light intensity data from Winger et al. (Light_levels_dryad.csv). 
-* Bird body mass and wingspan data from Avibase (Bird_Mass_Wingspan_Windload.csv). 
-* Processed bird body mass and wingspan data (merged_data.csv). 
-* Trophic level of each species from Avibase (trophic_level.csv). 
+* Bird-building collision data from Winger et al. (Chicago_collision_data.csv).
+  - Genus: genus type of each species
+  - Species: bird species name
+  - Date: date in which a bird-building collision was recorded, Y/M/D format
+  - Locality: location of the bird-building collision incident (MP: McCormick Place convention centre and CHI: downtown Chicago)
+* Collision data in wide format (Chicago_collision_data_wide.csv).
+  - Species_Name: scientific name of each species
+  - collision_freq: total collision frequencies per species
+* Light intensity data from Winger et al. (Light_levels_dryad.csv).
+  - Date: date in which light intensity was observed, Y/M/D format
+  - Light_Score: measured light intensity at the corresponding day, values from 1 to 17
+* Bird body mass and wingspan data from Avibase (Bird_Mass_Wingspan_Windload.csv).
+  - Species_Name: scientific name of each species
+  - Avg_Body_Mass_g: average body mass of each species in grams
+  - Avg_Wingspan_cm: average wingspan of each species in centimeters
+  - Wind_Load: wind load of each species, Avg_Body_Mass_g (g)/ Avg_Wingspan_cm (cm)
+* Processed bird body mass and wingspan data (merged_data.csv).
+  - Species_Name: scientific name of each species
+  - Avg_Body_Mass_g: average body mass of each species in grams
+  - Avg_Wingspan_cm: average wingspan of each species in centimeters
+  - Wind_Load: wind load of each species, Avg_Body_Mass_g (g)/ Avg_Wingspan_cm (cm)
+  - collision_freq: total collision frequencies per species
+* Trophic level of each species from Avibase (trophic_level.csv).
+  - x: scientific name of each species
+  - trophic_level: trophic level of each species (Omnivore, Carnivore, Herbivore)
 
 **Analyses**:
 
 * Analyses for Prediction 1 (prediction_1.Rmd). 
-* An .Rmd file to extract species names from collision data (Name_extract.Rmd). 
-* Analyses for Prediction 2a (2a_data_cleaning_merging.Rmd, 2a_data_analysis.Rmd). 
+* Analyses for Prediction 2a (2a_data_cleaning_merging.Rmd, prediction_2a.Rmd). 
 * Analyses for Prediction 2b (prediction_2b.Rmd). 
 
 **Other files**:
