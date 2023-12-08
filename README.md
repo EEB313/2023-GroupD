@@ -16,16 +16,16 @@ The contents of the group repository are as follows.
 **Data (raw and processed)**:
 
 * Bird-building collision data from Winger et al. (Chicago_collision_data.csv).
-  - Genus: genus type of each species
-  - Species: bird species name
-  - Date: date in which a bird-building collision was recorded, Y/M/D format
-  - Locality: location of the bird-building collision incident (MP: McCormick Place convention centre and CHI: downtown Chicago)
+  - Genus: genus of each lethal bird-building collision observed
+  - Species: species of each collision observed
+  - Date: date on which collision was observed, Y/M/D format
+  - Locality: location where collision was observed(MP: McCormick Place convention centre and CHI: downtown Chicago)
 * Collision data in wide format (Chicago_collision_data_wide.csv).
   - Species_Name: scientific name of each species
-  - collision_freq: total collision frequencies per species
+  - collision_freq: total number of collisions per species
 * Light intensity data from Winger et al. (Light_levels_dryad.csv).
-  - Date: date in which light intensity was observed, Y/M/D format
-  - Light_Score: measured light intensity at the corresponding day, values from 1 to 17
+  - Date: date on which light intensity was quantified, Y/M/D format
+  - Light_Score: measure of intensity of artificial light at night, values from 1 to 17
 * Bird body mass and wingspan data from Avibase (Bird_Mass_Wingspan_Windload.csv).
   - Species_Name: scientific name of each species
   - Avg_Body_Mass_g: average body mass of each species in grams
@@ -52,5 +52,6 @@ The contents of the group repository are as follows.
 * This README.md file. 
 * Project proposal (EEB313_Project_Proposal.pdf). 
 * Mid-project update (Mid-project update.pdf). 
-* Presentation slides. 
+* Presentation slides(EEB313_Pre.pdf). 
+* Project report (Final_project_report.pdf). 
 
